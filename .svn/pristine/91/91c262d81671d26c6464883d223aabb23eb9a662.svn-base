@@ -1,0 +1,9 @@
+function getKeyWord(){  
+    var kw=document.getElementById("kw");
+	chrome.storage.sync.set({'kwValue': kw.value}, function() {
+      console.log("kw stored!");
+    });
+	 
+}
+
+getKeyWord();

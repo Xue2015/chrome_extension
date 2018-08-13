@@ -1,0 +1,19 @@
+ <!DOCTYPE html>
+  <html>
+    <head>
+      <style>
+        button {
+          height: 30px;
+          width: 150px;
+		  opacity:1;
+          outline: none;
+        }
+      </style>
+    </head>
+    <body>
+      <button id="changeColor">changeColor</button>
+	  <button id="alertBtn" style="background-color: brown">alertBtn</button>
+	  <button id="collectDataBtn" style="background-color: darkorange">collectDataBtn</button>
+	  <script src="popup.js"></script>
+    </body>
+  </html>

@@ -1,0 +1,7 @@
+function getKeyWord(){  
+    var kw=document.getElementById("kw");
+	
+	 alert(kw.value);
+}
+
+getKeyWord();

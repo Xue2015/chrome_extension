@@ -1,0 +1,20 @@
+ <!DOCTYPE html >
+  <html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <style>
+        button {
+          height: 30px;
+          width: 150px;
+		  opacity:1;
+          outline: none;
+        }
+      </style>
+    </head>
+    <body>
+      <button id="changeColor" style="background-color: aqua">WEB职位</button>
+	  <button id="alertBtn" style="background-color: brown">JAVA职位</button>
+	  <button id="collectDataBtn" style="background-color: darkorange">全部打印</button>
+	  <script src="popup.js"></script>
+    </body>
+  </html>

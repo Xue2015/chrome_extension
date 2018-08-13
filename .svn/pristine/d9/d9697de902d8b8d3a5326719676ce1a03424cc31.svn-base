@@ -1,0 +1,149 @@
+/**
+ * *****************
+ */
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        console.log(sender.tab ?
+            "from a content script:" + sender.tab.url :
+            "from the extension");
+        if (request.greeting == "hello") {
+
+            var employeeGet = getEmployeeInfo();
+            var obj = {};
+            chrome.storage.sync.get("employeesGet", function (data) {
+                if (data.employeesGet) {
+                    obj.employeesGet = data.employeesGet;
+                    obj.employeesGet.push(employeeGet)
+                    chrome.storage.sync.set(obj, function () {
+                        //TODO toast
+                        console.log("obj stored");
+                    });
+                } else {
+                    obj.employeesGet = [];
+                    obj.employeesGet.push(employeeGet);
+                    chrome.storage.sync.set(obj, function () {
+                        //TODO toast
+                        console.log("obj stored");
+                    });
+                }
+            });
+
+            sendResponse({farewell: "goodbye"});
+        }
+
+
+        if (request.greeting == "hello02") {
+
+            getAllEmployees();
+            sendResponse({farewell: "goodbye"});
+        }
+    });
+
+/**
+ *******************
+ */
+
+
+
+
+
+
+function getKeyWord(){
+    var kw=document.getElementById("kw");
+	chrome.storage.sync.set({'kwValue': kw.value}, function() {
+      console.log("kw stored!");
+    });
+	 
+}
+
+
+function getEmployeeInfo(){  
+    var kw=document.getElementById("kw");
+	var employee = new Object();
+	
+	
+	var elements=jQuery.find('#divResume  table  tbody  tr  td  table.box1  tbody  tr  td:nth-child(2)  table  tbody  tr:nth-child(2)  td:nth-child(2)');
+	
+	
+	for (var i = 0; i < elements.length; i++) {
+	    if("https://img07.51jobcdn.com/imehire/ehire2007/defaultnew/image/resumedetails/y2.png" == elements[i].firstElementChild.src) {
+		    employee.phNo = elements[i].textContent;
+			console.log(employee.phNo);
+		}
+		
+		if(null != elements[i].textContent && undefined != elements[i].textContent && elements[i].textContent.indexOf("@") > 0) {
+			employee.email = elements[i].textContent;
+			console.log(employee.email);
+		}
+	}
+	
+	var nameElements = jQuery.find('#divResume  table  tbody  tr  td  table.box1  tbody  tr  td:nth-child(2)  table  tbody  tr:nth-child(1)  td.name');
+	employee.name = nameElements[0].childNodes[0].nodeValue.trim();
+	console.log(employee.name);
+	
+	var genderElements = jQuery.find('#divResume > table > tbody > tr > td > table.box1 > tbody > tr > td:nth-child(2) > table > tbody > tr:nth-child(3) > td');
+	employee.gender = genderElements[0].childNodes[2].nodeValue;
+	console.log(employee.gender);
+	
+	var eduElements = jQuery.find('#divResume > table > tbody > tr > td > table.box2 > tbody > tr > td > table > tbody > tr > td:nth-child(2) > table > tbody > tr:nth-child(4) > td.txt2');
+	employee.edu = eduElements[0].textContent;
+	console.log(employee.edu);
+	
+	var majorElements = jQuery.find('#divResume > table > tbody > tr > td > table.box2 > tbody > tr > td > table > tbody > tr > td:nth-child(2) > table > tbody > tr:nth-child(2) > td.txt2');
+	employee.major = majorElements[0].textContent;
+	console.log(employee.major);
+	
+	var schoolElements = jQuery.find('#divResume > table > tbody > tr > td > table.box2 > tbody > tr > td > table > tbody > tr > td:nth-child(2) > table > tbody > tr:nth-child(3) > td.txt2');
+	employee.school = schoolElements[0].textContent;
+	console.log(employee.school);
+	
+	var jobElements = jQuery.find('#divResume > table > tbody > tr > td > table.box2 > tbody > tr > td > table > tbody > tr > td:nth-child(1) > table > tbody > tr:nth-child(2) > td.txt2');
+	employee.job = jobElements[0].textContent;
+	console.log(employee.job);
+
+	var purposeElements = jQuery.find('#divInfo > td > table:nth-child(3) > tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(3) > td:nth-child(1) > table > tbody > tr > td.txt2 > span');
+	if (purposeElements[0]) {
+	    employee.purpose = purposeElements[0].textContent;
+    }
+    console.log(employee.purpose);
+
+	employee.source = "51job";
+	employee.dep = "adwan";
+
+	var employeeStr = JSON.stringify(employee);
+    alert(employeeStr);
+	return employee;
+}
+
+
+function getAllEmployees() {
+    // var employeeGet = getEmployeeInfo();
+    var obj = {};
+    chrome.storage.sync.get("employeesGet", function (data) {
+        if (data.employeesGet) {
+            obj.employeesGet = data.employeesGet;
+            var str = "";
+            for (var i = 0; i < obj.employeesGet.length; i++) {
+                var tempStr = obj.employeesGet[i].dep + "," + obj.employeesGet[i].phNo + ","
+                + obj.employeesGet[i].name + "," + obj.employeesGet[i].gender + ","
+                + obj.employeesGet[i].edu +","+obj.employeesGet[i].major+","
+                +obj.employeesGet[i].school+","+obj.employeesGet[i].purpose+","
+                +obj.employeesGet[i].email+","+obj.employeesGet[i].source;
+                str = str + tempStr + "\\n";
+            }
+
+            alert(str);
+            chrome.storage.sync.clear(function () {
+                console.log("data cleared");
+            })
+
+
+        } else {
+            obj.employeesGet = [];
+            alert("employeesGet empty");
+        }
+    });
+}
+
+
+// getEmployeeInfo();
